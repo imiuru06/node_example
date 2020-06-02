@@ -1,7 +1,29 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(node_example)
 
-find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure message_generation roscpp rosgraph_msgs rospy std_msgs)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+
+find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
+  message_generation
+  roscpp
+  rosgraph_msgs
+  rospy
+
+  cv_bridge
+
+  pcl_ros
+  pcl_conversions
+
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  cloud_msgs
+
+)
+
+find_package(PCL REQUIRED QUIET)
+find_package(OpenCV REQUIRED QUIET)
 
 add_message_files(
   FILES
@@ -18,10 +40,25 @@ generate_dynamic_reconfigure_options(
 )
 
 catkin_package(
-  CATKIN_DEPENDS dynamic_reconfigure message_runtime roscpp rosgraph_msgs rospy std_msgs
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS dynamic_reconfigure message_runtime
+  roscpp rosgraph_msgs rospy std_msgs cloud_msgs
+  DEPENDS PCL
+
 )
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+)
+
+link_directories(
+	include
+	${PCL_LIBRARY_DIRS}
+	${OpenCV_INCLUDE_DIRS}
+)
 
 add_executable(talker src/nodes/talker_node.cpp src/talker.cpp)
 target_link_libraries(talker ${catkin_LIBRARIES})
@@ -30,6 +67,11 @@ add_dependencies(talker node_example_gencfg node_example_generate_messages_cpp)
 add_executable(listener src/listener.cpp src/nodes/listener_node.cpp)
 target_link_libraries(listener ${catkin_LIBRARIES})
 add_dependencies(listener node_example_gencfg node_example_generate_messages_cpp)
+
+add_executable(rosbag_publisher src/rosbag_publisher.cpp src/nodes/rosbag_publisher_node.cpp)
+target_link_libraries(rosbag_publisher ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+
+
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
