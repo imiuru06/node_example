@@ -65,7 +65,7 @@ namespace node_example  // in the future, Rename it.
     //! Turn off publisher.
     void stop();
 
-    void loadPCD(size_t i);
+    bool loadPCD(size_t i);
     void preparePath();
     void publishData();
     void bagRecord();

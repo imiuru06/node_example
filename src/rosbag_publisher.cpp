@@ -81,13 +81,15 @@ namespace node_example
 
   }
 
-  void BagPublisher::loadPCD(size_t i)
+  bool BagPublisher::loadPCD(size_t i)
   {
     if(pcl::io::loadPCDFile<PointType> (pcdPaths[i], *groupCloud) == -1)
     {
         PCL_ERROR ("Couldnt read file *.pcd \n");
-        return ;
+        return true;
     }
+
+    return false;
   }
 
   void BagPublisher::publishData(){
@@ -213,11 +215,11 @@ namespace node_example
     uint32_t s;
     uint32_t ns;
 
-    //pub_.publish(laserCloudMsg);
-    //ROS_INFO("======%d / %d ========", cntFiles-1, numFiles);
-    for(size_t i=0; i< numFiles ; i++){
+    for(size_t i=0 ; i< numFiles ; i++){
 
-      loadPCD(i);
+      if(loadPCD(i)){
+        continue ;
+      }
       pcdTransform();
 
       pcl::toROSMsg(*groupCloud, laserCloudMsg);
