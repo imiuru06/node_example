@@ -2,7 +2,7 @@
 
 namespace node_example
 {
-  BagPublisher::BagPublisher(ros::NodeHandle nh) : nh_(nh), enable(true)// : nh_(nh), message_("hello"), a_(1), b_(2), enable_(true)
+  BagPublisher::BagPublisher(ros::NodeHandle nh) : nh_(nh), enable_(true)// : nh_(nh), message_("hello"), a_(1), b_(2), enable_(true)
   {
     // Set up a dynamic reconfigure server.
     // Do this before parameter server, else some of the parameter server values can be overwritten.
@@ -13,9 +13,9 @@ namespace node_example
     //r_srv_.setCallback(cb);
 
     // Declare variables that can be modified by launch file or command line.
-    double rate = 10.0;//1.0;
+    double rate = 50.0;//1.0;
 
-    groupCloud.reset(new pcl::PointCloud<PointType>());
+    groupCloud.reset(new pcl::PointCloud<pcl::PointXYZI>());
 
     // Initialize node parameters from launch file or command line. Use a private node handle so that multiple instances
     // of the node can be run simultaneously while using different parameters.
@@ -23,27 +23,29 @@ namespace node_example
 
     bool enable_ = true;
 
-    pnh.param("a", a_, a_);
-    pnh.param("b", b_, b_);
+//    pnh.param("a", a_, a_);
+//    pnh.param("b", b_, b_);
     pnh.param("message", message_, message_);
     pnh.param("rate", rate, rate);
     pnh.param("enable", enable_);
 
     pointCloudTopic = "/velodyne_points";
-
-
     folderPath = "/mnt/e/pointclouds_data/";
-
+    deviceName = "lidar0";
+    fileType = ".pcd";
 
     pnh.param("pointCloudTopic", pointCloudTopic);
 
     pnh.param("folderPath", folderPath);
 
+    pnh.param("deviceName", deviceName);
+
     // Create a publisher and name the topic.
     if (enable_)
     {
       preparePath();
-      start();
+      bagRecord();
+      // start();
     }
 
     // Create timer.
@@ -52,8 +54,6 @@ namespace node_example
 
   void BagPublisher::start()
   {
-    //pub_ = nh_.advertise<node_example::NodeExampleData>("example", 10);
-
     pub_ = nh_.advertise<sensor_msgs::PointCloud2>(pointCloudTopic, 1);
   }
 
@@ -67,63 +67,205 @@ namespace node_example
 
     if (numFiles==cntFiles)
     {
-      enable_ = false;
       return;
     }
 
     sensor_msgs::PointCloud2 laserCloudMsg;
 
     // when timerCallback. :
-    loadPCD();
+    //loadPCD();
 
-    publishData();
+    //publishData();
+
+
 
   }
 
-  void BagPublisher::loadPCD()
+  void BagPublisher::loadPCD(size_t i)
   {
-    if(pcl::io::loadPCDFile<PointType> (pcdPaths[cntFiles++], *groupCloud) == -1)
+    if(pcl::io::loadPCDFile<PointType> (pcdPaths[i], *groupCloud) == -1)
     {
         PCL_ERROR ("Couldnt read file *.pcd \n");
         return ;
     }
-
-/*
-    std::cout << "Loaded "
-            << groupCloud->width * groupCloud->height
-            << " data points from test_pcd.pcd with the following fields: "
-            << std::endl;
-
-            for (std::size_t i = 0; i < groupCloud->points.size (); ++i)
-                std::cout << " " << groupCloud->points[i].x
-                          << " " << groupCloud->points[i].y
-                          << " " << groupCloud->points[i].z << std::endl;
-                          */
   }
 
   void BagPublisher::publishData(){
     sensor_msgs::PointCloud2 laserCloudMsg;
+
     pcl::toROSMsg(*groupCloud, laserCloudMsg);
-    //laserCloudMsg.header.stamp.sec = 1;//cloudHeader.stamp;
-    //laserCloudMsg.header.stamp.nsec = 2;//cloudHeader.stamp;
-    laserCloudMsg.header.stamp = ros::Time::now();
+
+    std::string strS = pcdTimestamp[cntFiles].substr(0, 10);
+    std::string strNs = pcdTimestamp[cntFiles++].substr(10, 6);
+    strNs = strNs + "000";
+    uint32_t s = std::atoi(strS.c_str());
+    uint32_t ns = std::atoi(strNs.c_str());
+    ros::Time velodyneTime(s, ns);
+
+    laserCloudMsg.header.stamp = velodyneTime;
     laserCloudMsg.header.frame_id = "velodyne";
     pub_.publish(laserCloudMsg);
-    ROS_INFO("======%d / %d ========", cntFiles, numFiles);
+    ROS_INFO("======%d / %d ========", cntFiles-1, numFiles);
   }
 
   void BagPublisher::preparePath()
   {
       numFiles = 0;
       cntFiles = 0;
+      pcdPaths.reserve(100);
       pcdPaths.clear();
+
+//      pcdFilenames.reserve(50);
+//      pcdFilenames.clear();
+      pcdTimestamp.reserve(50000);
+      pcdTimestamp.clear();
+
       //uint32_t idx=0;
       for(auto& p : fs::directory_iterator(folderPath)){
         pcdPaths.push_back(p.path().string());
-        //idx++;
+
+        tmpString = p.path().filename().string();
+        tmpString = strTrim(tmpString, '_', true);
+        tmpString = strTrim(tmpString, '.', false);
+
+        pcdTimestamp.push_back(tmpString);
       }
-      numFiles = pcdPaths.size();
-      std::cout << "How many : " << pcdPaths.size() << std::endl;
+
+      sort(pcdPaths.begin(), pcdPaths.end());
+      sort(pcdTimestamp.begin(), pcdTimestamp.end());
+
+      if (pcdPaths.size() == pcdTimestamp.size()){
+        numFiles = pcdPaths.size();
+      }
+      else{
+        ROS_ERROR ("Something wrong when Preparing Path of PCD \n");
+      }
+
+  }
+
+
+/*
+  std::string BagPublisher::strSplit(std::string str, char delimiter)
+  {
+
+    //std::vector<std::string> internal;
+
+    std::stringstream ss(str);
+    std::string tmp;
+    //getline(ss, tmp, delimiter);
+    //internal.push_back(tmp);
+    //while(){
+
+    //}
+    std::getline(ss, tmp, delimiter);
+    return tmp;
+  }*/
+
+  // bFrontBack is parameter to select which side of string left
+  // false is front and true is back
+
+  std::string BagPublisher::strTrim(std::string strInput, const char delimiter, bool bFrontBack = false)
+  {
+
+    std::vector<char> strWritable(strInput.begin(), strInput.end());
+    strWritable.push_back('\0');
+
+    char* str = &strWritable[0];
+    char* token = NULL;
+
+    token = strtok(str, &delimiter);
+    std::string strOutput(token);
+
+
+    if (!bFrontBack){
+      return strOutput;
+    }
+    else{
+      //strReplace(strInput, strOutput, " ");
+      strInput.erase(0, strOutput.size()+1);
+      return strInput;
+       //+ std::string(delimiter)
+    }
+  }
+
+  std::string BagPublisher::strReplace(std::string strInput, std::string strFrom, char *charTo)
+  {
+
+    std::string strTo = std::string(charTo);
+    int strFromSize = strFrom.size();
+    int strToSize = strTo.size();
+
+    std::string tmpStr = strInput;
+
+    tmpStr.replace(tmpStr.find(strFrom), strFromSize, strTo);
+
+    return tmpStr;
+  }
+
+  void BagPublisher::bagRecord(){
+    bag.open("test2.bag", rosbag::bagmode::Write);
+
+    sensor_msgs::PointCloud2 laserCloudMsg;
+
+    std::string strS;
+    std::string strNs;
+    strNs = strNs + "000";
+    uint32_t s;
+    uint32_t ns;
+
+    //pub_.publish(laserCloudMsg);
+    //ROS_INFO("======%d / %d ========", cntFiles-1, numFiles);
+    for(size_t i=0; i< numFiles ; i++){
+
+      loadPCD(i);
+      pcdTransform();
+
+      pcl::toROSMsg(*groupCloud, laserCloudMsg);
+
+      strS = pcdTimestamp[i].substr(0, 10);
+      strNs = pcdTimestamp[i].substr(10, 6);
+      strNs = strNs + "000";
+      s = std::atoi(strS.c_str());
+      ns = std::atoi(strNs.c_str());
+      ros::Time velodyneTime(s, ns);
+      laserCloudMsg.header.stamp = velodyneTime;
+      laserCloudMsg.header.frame_id = "velodyne";
+
+      bag.write("/velodyne_points", velodyneTime, laserCloudMsg);
+      //std::cout << "sec : " << std::atoi(pcdTimestamp[i].substr(0, 7)) << std::endl;
+      //std::cout << "nsec : " << std::atoi(pcdTimestamp[i].substr(7, 9)) << std::endl;
+      //std::cout << "sec : " << pcdTimestamp[i].substr(0, 10) << std::endl;
+      //std::cout << "nsec : " << pcdTimestamp[i].substr(10, 6) << std::endl;
+
+      ROS_INFO("====== %d / %d ========", i, numFiles);
+    }
+
+    std::cout << "Total number of files : " << pcdTimestamp.size() << std::endl;
+    bag.close();
+
+
+  }
+
+  void BagPublisher::pcdTransform(){
+    //pcl::PointCloud<PointType>::Ptr tmpCloud (new pcl::PointCloud<PointType>());
+    PointType thisPoint;
+    float range;
+    size_t cloudSize;
+
+    cloudSize = groupCloud->points.size();
+
+    for(size_t i = 0; i<cloudSize; ++i){
+      thisPoint.x = -groupCloud->points[i].y;
+      thisPoint.y = -groupCloud->points[i].x;
+      thisPoint.z = -groupCloud->points[i].z;
+
+      range = sqrt(thisPoint.x * thisPoint.x + thisPoint.y * thisPoint.y + thisPoint.z * thisPoint.z);
+
+      thisPoint.intensity = range;// (float)rowIdn + (float)columnIdn / 10000.0;
+      groupCloud->points[i] = thisPoint;
+
+    }
+    //groupCloud = tmpCloud;
 
   }
 

@@ -1,0 +1,17 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+node_example	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^namespace node_example$/;"	namespace	line:3	file:
+BagPublisher	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  BagPublisher::BagPublisher(ros::NodeHandle nh) : nh_(nh), enable_(true)\/\/ : nh_(nh), message_("hello"), a_(1), b_(2), enable_(true)$/;"	function	line:5	class:node_example::BagPublisher	signature:(ros::NodeHandle nh)
+start	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::start()$/;"	function	line:55	class:node_example::BagPublisher	signature:()
+stop	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::stop()$/;"	function	line:60	class:node_example::BagPublisher	signature:()
+timerCallback	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::timerCallback(const ros::TimerEvent &event __attribute__((unused)))$/;"	function	line:65	class:node_example::BagPublisher	signature:(const ros::TimerEvent &event __attribute__((unused)))
+loadPCD	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::loadPCD(size_t i)$/;"	function	line:84	class:node_example::BagPublisher	signature:(size_t i)
+publishData	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::publishData(){$/;"	function	line:93	class:node_example::BagPublisher	signature:()
+preparePath	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::preparePath()$/;"	function	line:113	class:node_example::BagPublisher	signature:()
+strTrim	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  std::string BagPublisher::strTrim(std::string strInput, const char delimiter, bool bFrontBack = false)$/;"	function	line:169	class:node_example::BagPublisher	signature:(std::string strInput, const char delimiter, bool bFrontBack = false)
+strReplace	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  std::string BagPublisher::strReplace(std::string strInput, std::string strFrom, char *charTo)$/;"	function	line:193	class:node_example::BagPublisher	signature:(std::string strInput, std::string strFrom, char *charTo)
+bagRecord	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::bagRecord(){$/;"	function	line:207	class:node_example::BagPublisher	signature:()

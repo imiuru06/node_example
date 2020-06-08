@@ -4,6 +4,8 @@
 // ROS includes.
 #include <ros/ros.h>
 #include <ros/time.h>
+#include <rosbag/bag.h>
+
 
 #include <pcl/PCLPointCloud2.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -31,6 +33,8 @@
 #include <iostream>
 #include <fstream>
 #include <experimental/filesystem>
+
+#include <algorithm>
 
 //namespace fs = std::experimental::filesystem;
 
@@ -61,10 +65,15 @@ namespace node_example  // in the future, Rename it.
     //! Turn off publisher.
     void stop();
 
-    void loadPCD();
+    void loadPCD(size_t i);
     void preparePath();
     void publishData();
+    void bagRecord();
+    void pcdTransform();
 
+    std::string strSplit(std::string str, char delimiter);
+    std::string strTrim(std::string strInput, const char delimiter, bool bFrontBack);
+    std::string strReplace(std::string strInput, std::string strFrom, char *charTo);
 
     //! ROS node handle.
     ros::NodeHandle nh_;
@@ -83,10 +92,21 @@ namespace node_example  // in the future, Rename it.
 
     std::string pointCloudTopic;
     std::string folderPath;
+    std::string deviceName;
+    std::string fileType;
+
+    std::string tmpString;
+
+    rosbag::Bag bag;
+
     std::vector<std::string> pcdPaths;
+    std::vector<std::string> pcdFilenames;
+    std::vector<std::string> pcdTimestamp;
+
 
     uint32_t numFiles;
     uint32_t cntFiles;
+
 
     //! The first integer to use in addition.
     int a_;
@@ -98,6 +118,7 @@ namespace node_example  // in the future, Rename it.
     bool enable_;
 
     pcl::PointCloud<PointType>::Ptr groupCloud;
+
 
 
   };

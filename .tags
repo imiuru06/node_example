@@ -1,0 +1,35 @@
+ROSBAG_PUBLISHER_H	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^#define ROSBAG_PUBLISHER_H$/;"	macro	line:2
+PointType	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^typedef pcl::PointXYZI  PointType;$/;"	typedef	line:43
+node_example	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^namespace node_example  \/\/ in the future, Rename it.$/;"	namespace	line:45
+BagPublisher	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^  class BagPublisher$/;"	class	line:49	namespace:node_example
+nh_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    ros::NodeHandle nh_;$/;"	member	line:78	class:node_example::BagPublisher
+timer_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    ros::Timer timer_;$/;"	member	line:81	class:node_example::BagPublisher
+pub_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    ros::Publisher pub_;$/;"	member	line:84	class:node_example::BagPublisher
+dr_srv_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    dynamic_reconfigure::Server<node_example::nodeExampleConfig> dr_srv_;$/;"	member	line:87	class:node_example::BagPublisher
+message_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string message_;$/;"	member	line:90	class:node_example::BagPublisher
+pointCloudTopic	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string pointCloudTopic;$/;"	member	line:92	class:node_example::BagPublisher
+folderPath	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string folderPath;$/;"	member	line:93	class:node_example::BagPublisher
+deviceName	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string deviceName;$/;"	member	line:94	class:node_example::BagPublisher
+fileType	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string fileType;$/;"	member	line:95	class:node_example::BagPublisher
+tmpString	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::string tmpString;$/;"	member	line:97	class:node_example::BagPublisher
+bag	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    rosbag::Bag bag;$/;"	member	line:99	class:node_example::BagPublisher
+pcdPaths	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::vector<std::string> pcdPaths;$/;"	member	line:101	class:node_example::BagPublisher
+pcdFilenames	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::vector<std::string> pcdFilenames;$/;"	member	line:102	class:node_example::BagPublisher
+pcdTimestamp	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    std::vector<std::string> pcdTimestamp;$/;"	member	line:103	class:node_example::BagPublisher
+numFiles	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    uint32_t numFiles;$/;"	member	line:106	class:node_example::BagPublisher
+cntFiles	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    uint32_t cntFiles;$/;"	member	line:107	class:node_example::BagPublisher
+a_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    int a_;$/;"	member	line:111	class:node_example::BagPublisher
+b_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    int b_;$/;"	member	line:114	class:node_example::BagPublisher
+enable_	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    bool enable_;$/;"	member	line:117	class:node_example::BagPublisher
+groupCloud	/home/adip/catkin_ws/src/node_example/include/node_example/rosbag_publisher.h	/^    pcl::PointCloud<PointType>::Ptr groupCloud;$/;"	member	line:119	class:node_example::BagPublisher
+node_example	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^namespace node_example$/;"	namespace	line:3	file:
+BagPublisher	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  BagPublisher::BagPublisher(ros::NodeHandle nh) : nh_(nh), enable_(true)\/\/ : nh_(nh), message_("hello"), a_(1), b_(2), enable_(true)$/;"	function	line:5	class:node_example::BagPublisher	signature:(ros::NodeHandle nh)
+start	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::start()$/;"	function	line:55	class:node_example::BagPublisher	signature:()
+stop	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::stop()$/;"	function	line:60	class:node_example::BagPublisher	signature:()
+timerCallback	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::timerCallback(const ros::TimerEvent &event __attribute__((unused)))$/;"	function	line:65	class:node_example::BagPublisher	signature:(const ros::TimerEvent &event __attribute__((unused)))
+loadPCD	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::loadPCD(size_t i)$/;"	function	line:84	class:node_example::BagPublisher	signature:(size_t i)
+publishData	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::publishData(){$/;"	function	line:93	class:node_example::BagPublisher	signature:()
+preparePath	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::preparePath()$/;"	function	line:113	class:node_example::BagPublisher	signature:()
+strTrim	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  std::string BagPublisher::strTrim(std::string strInput, const char delimiter, bool bFrontBack = false)$/;"	function	line:169	class:node_example::BagPublisher	signature:(std::string strInput, const char delimiter, bool bFrontBack = false)
+strReplace	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  std::string BagPublisher::strReplace(std::string strInput, std::string strFrom, char *charTo)$/;"	function	line:193	class:node_example::BagPublisher	signature:(std::string strInput, std::string strFrom, char *charTo)
+bagRecord	/home/adip/catkin_ws/src/node_example/src/rosbag_publisher.cpp	/^  void BagPublisher::bagRecord(){$/;"	function	line:207	class:node_example::BagPublisher	signature:()
