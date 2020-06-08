@@ -1,0 +1,13 @@
+<!-- Starts up everything needed to run the example listener/talker nodes. -->
+<launch>
+  <!-- Arguments to allow changing common parameters from the command line or when including this file from other launch files. -->
+
+  <arg name="folderPath" default="/home/adip/data/2019-04-16_16-14-48/pointclouds_data/"/>
+
+
+  <!-- The C++ listener node subscribes to the custom message that either talker is publishing. -->
+  <node pkg="node_example" type="rosbag_publisher" name="rosbag_publisher">
+    <param name="folderPath" value="$(arg folderPath)"/>
+  </node>
+
+</launch>

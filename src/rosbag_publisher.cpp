@@ -30,26 +30,30 @@ namespace node_example
     pnh.param("enable", enable_);
 
     pointCloudTopic = "/velodyne_points";
-    folderPath = "/mnt/e/pointclouds_data/";
+    //folderPath = "/home/adip/data/2019-04-16_16-14-48/pointclouds_data/";
     deviceName = "lidar0";
     fileType = ".pcd";
 
     pnh.param("pointCloudTopic", pointCloudTopic);
 
-    pnh.param("folderPath", folderPath);
+    pnh.param("folderPath", folderPath, folderPath);
 
     pnh.param("deviceName", deviceName);
+
+    ROS_INFO("folderPath : is %s", folderPath);
+    ROS_INFO("deviceName : is %s", deviceName);
 
     // Create a publisher and name the topic.
     if (enable_)
     {
+
       preparePath();
       bagRecord();
       // start();
     }
 
     // Create timer.
-    timer_ = nh_.createTimer(ros::Duration(1.0 / rate), &BagPublisher::timerCallback, this);
+    //timer_ = nh_.createTimer(ros::Duration(1.0 / rate), &BagPublisher::timerCallback, this);
   }
 
   void BagPublisher::start()
@@ -83,6 +87,7 @@ namespace node_example
 
   void BagPublisher::loadPCD(size_t i)
   {
+    ROS_INFO("Load pcd at this point");
     if(pcl::io::loadPCDFile<PointType> (pcdPaths[i], *groupCloud) == -1)
     {
         PCL_ERROR ("Couldnt read file *.pcd \n");
@@ -115,8 +120,6 @@ namespace node_example
       pcdPaths.reserve(100);
       pcdPaths.clear();
 
-//      pcdFilenames.reserve(50);
-//      pcdFilenames.clear();
       pcdTimestamp.reserve(50000);
       pcdTimestamp.clear();
 
